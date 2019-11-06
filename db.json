@@ -1,0 +1,14 @@
+{
+  "exercises": [
+    { "id": 1, "type": "hot yoga" },
+    { "id": 2, "type": "inferno hot pilates" },
+    { "id": 3, "type": "futsal" },
+    { "id": 4, "type": "pickup soccer" },
+    { "id": 4, "type": "walking" }
+  ],
+  "calendar_entries": [
+    { "id": 1, "date": "2019-10-31", "exercise": 2 },
+    { "id": 1, "date": "2019-10-30", "exercise": 3 },
+    { "id": 1, "date": "2019-10-29", "exercise": 2 }
+  ]
+}
