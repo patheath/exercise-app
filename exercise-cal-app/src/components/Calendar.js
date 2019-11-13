@@ -3,26 +3,51 @@ import React, { Component } from 'react'
 class Calendar extends Component {
 
   constructor () {
-    let currMonth, currYear, today;
-    today = new Date();
-    currMonth = today.getMonth();
-    currYear = today.getFullYear();
+    const today = new Date();
 
     super();
 
     this.state = { 
-      month: currMonth, 
-      year: currYear,
+      month: today.getMonth(), 
+      year: today.getFullYear(),
       months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     };
   }
 
+  switchMonth = (forward) => {
+    let month = this.state.month;
+    let year = this.state.year;
+
+    forward ? month++ : month--
+
+    if (month > 11) {
+      month=0;
+      year++;
+    } else if (month < 0) {
+      month = 11;
+      year--;
+    }
+
+    // How long is the month? Move one month in future then subtract 1 day and see 
+    // how many days in the month
+    const nextMonthDateString = (month == 11) ? this.state.months[0] + " " + (year + 1) : this.state.months[month + 1] + " " + year;
+    const selectedMonth = new Date(nextMonthDateString);
+    selectedMonth.setDate(0);  // set to last day in selected month
+    const daysInMonths = selectedMonth.getDate();
+    selectedMonth.setDate(1);  // set to first day in the selected month
+    const startingDay = selectedMonth.getDay();
+
+    // have my starting day and my length of month let's draw!
+    
+    this.setState({ month: month, year: year});
+  }
+
   next = () => {
-    alert("Next" + this.state.year);
+    this.switchMonth(true);
   }
 
   previous = () => {
-    alert("Previous" + this.state.year);
+    this.switchMonth(false);
   }
 /*
   exerciseCalendar = () => { 
