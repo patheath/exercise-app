@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DaysHeader from './DaysHeader';
-import DaysRow from './DaysRow';
+import Row from './Row';
 
 class DaysGrid extends Component {
 
@@ -35,7 +35,6 @@ class DaysGrid extends Component {
     return days
   }
 
-
   render(props) {
     
     const gridRows = [0,1,2,3,4,5]; // six rows
@@ -43,14 +42,15 @@ class DaysGrid extends Component {
 
     const rows = gridRows.map( i => {
       const daysSlice = days.slice(i*7, i*7+7);
-      console.log(daysSlice);
+      const key = this.props.year + "-" + this.props.month + "-" + i;
       return (
-        <DaysRow 
-          row={i}
-          days={daysSlice}
-          year={this.props.year}
-          month={this.props.month}
-        />
+          <Row 
+            key={key}
+            rowIndex={i}
+            days={daysSlice}
+            year={this.props.year}
+            month={this.props.month}
+          />
       )
     });
 
@@ -58,7 +58,7 @@ class DaysGrid extends Component {
       <div>
         <DaysHeader />
         <div id="cal-frame"> 
-          <table class="curr"> 
+          <table className="curr"> 
               <tbody>
                 {rows}
               </tbody> 
