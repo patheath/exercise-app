@@ -67,6 +67,7 @@ class Calendar extends Component {
 
     const displayMonth = DISPLAY_MONTHS[this.state.month];
     const [daysInMonth, startingDay] = this.calculateDays(this.state.month, this.state.year);
+    const gridKey = this.state.year + "-" + this.state.month;
 
     return(
       <div id="cal"> 
@@ -77,6 +78,7 @@ class Calendar extends Component {
           next={this.next}
         />
         <DaysGrid 
+          key={gridKey}
           daysInMonth={daysInMonth}
           startingDay={startingDay}
           year={this.state.year}

@@ -32,7 +32,7 @@
 #cal .header { 
     cursor:default; 
     background: ##3f51b5; 
-    background: -moz-linear-gradient(top, #485ccd, ##3f51b5); 
+    background: -moz-linear-gradient(top, #485ccd, #3f51b5); 
     background: -webkit-gradient(linear, left top, left bottom, from(#485ccd), to(#3f51b5)); 
     height: 34px; 
     position: relative; 
@@ -72,8 +72,8 @@
     border-top-right-radius: 5px; 
 } 
 #cal .header .button:hover { 
-    background: -moz-linear-gradient(top, #d94215, #bb330f); 
-    background: -webkit-gradient(linear, left top, left bottom, from(#d94215), to(#bb330f)); 
+    background: -moz-linear-gradient(top, #8f99d0, #3f51b5); 
+    background: -webkit-gradient(linear, left top, left bottom, from(#8f99d0), to(#3f51b5)); 
 }
 #cal .header .month-year { 
     letter-spacing: 1px; 

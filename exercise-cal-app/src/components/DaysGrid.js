@@ -2,7 +2,25 @@ import React, { Component } from 'react';
 import DaysHeader from './DaysHeader';
 import Row from './Row';
 
+const gridRows = [0,1,2,3,4,5]; // six rows
+
 class DaysGrid extends Component {
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      rows: this.emptyRows(),
+    };
+  }
+
+  emptyRows = () => {
+    return (gridRows.map((i) => {
+      return {
+        style: {display: 'none'},
+        exercise: '',
+      };
+    }))
+  };
 
   buildDays = (startingDay, daysInMonth) => {
     let day = 1;
@@ -35,9 +53,54 @@ class DaysGrid extends Component {
     return days
   }
 
+  displayExercise = (year, month, day, rowIndex) => {
+    const monthDB = month + 1;  // Javascript Jan is zero, DB's Jan is 1
+    const date = `${year}-${monthDB}-${day}`;
+    const exerciseRowKey = `${year}-${month}-${rowIndex}`;
+    const API = `http://localhost:3033/calendar_entries?date=${date}&_expand=exercise`;
+
+    let rows = this.emptyRows();
+
+    fetch(API)
+    .then(results => {
+      return results.json();
+    }).then(data => {
+      var exercises = data.map((exercise, index) => {
+        let type = exercise.exercise.type;
+        let length = exercise.length;
+        let text = `${type} - ${length} hours`;
+        return(<li key={index}>{text}</li>);
+      });
+
+      if (exercises.length > 0) {
+
+        const element = (
+          <div>
+          <ul style={{listStyleType: 'none'}}>
+            { exercises.map(exercise => {
+              return exercise
+              })
+            }
+          </ul>
+          </div>
+        );
+
+        rows[rowIndex] = {
+          style: {display: 'table-row'},
+          exercise: element,
+        }
+      }
+
+      this.setState((state) => { 
+        return(
+          { rows: rows }
+        );
+      });
+    })
+  }
+
   render(props) {
     
-    const gridRows = [0,1,2,3,4,5]; // six rows
     const days = this.buildDays(this.props.startingDay, this.props.daysInMonth);
 
     const rows = gridRows.map( i => {
@@ -50,6 +113,8 @@ class DaysGrid extends Component {
             days={daysSlice}
             year={this.props.year}
             month={this.props.month}
+            row = {this.state.rows[i]}
+            displayExercise = {this.displayExercise}
           />
       )
     });
