@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import DaysHeader from './DaysHeader';
 import Row from './Row';
+import AddExercise from './AddExercise';
+
 
 const gridRows = [0,1,2,3,4,5]; // six rows
 
@@ -56,7 +58,6 @@ class DaysGrid extends Component {
   displayExercise = (year, month, day, rowIndex) => {
     const monthDB = month + 1;  // Javascript Jan is zero, DB's Jan is 1
     const date = `${year}-${monthDB}-${day}`;
-    const exerciseRowKey = `${year}-${month}-${rowIndex}`;
     const API = `http://localhost:3033/calendar_entries?date=${date}&_expand=exercise`;
 
     let rows = this.emptyRows();
@@ -72,9 +73,10 @@ class DaysGrid extends Component {
         return(<li key={index}>{text}</li>);
       });
 
+      let element;
       if (exercises.length > 0) {
 
-        const element = (
+        element = (
           <div>
           <ul style={{listStyleType: 'none'}}>
             { exercises.map(exercise => {
@@ -84,12 +86,15 @@ class DaysGrid extends Component {
           </ul>
           </div>
         );
-
-        rows[rowIndex] = {
-          style: {display: 'table-row'},
-          exercise: element,
-        }
+      } else {
+        element = <AddExercise />;
       }
+
+      rows[rowIndex] = {
+        style: {display: 'table-row'},
+        exercise: element,
+      };
+
 
       this.setState((state) => { 
         return(
