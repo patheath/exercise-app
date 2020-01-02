@@ -16,7 +16,7 @@ class DayCell extends Component {
           this.props.year,
           this.props.month,
           this.props.day,
-          this.props.rowIndex
+          this.props.rowIndex,
         )}}
       >{this.props.day}</td>)
   }

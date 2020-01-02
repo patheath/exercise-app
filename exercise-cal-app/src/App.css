@@ -111,7 +111,7 @@
     -moz-box-shadow:1px 1px 0px #fff inset; 
     -webkit-box-shadow:1px 1px 0px #fff inset; 
 } 
-#cal #cal-frame td:not(.nil):hover { 
+#cal #cal-frame td.day:not(.nil):hover { 
     color:#fff; 
     text-shadow: #6C1A07 0px -1px; 
     background:##3f51b5; 

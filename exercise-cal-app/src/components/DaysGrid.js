@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DaysHeader from './DaysHeader';
 import Row from './Row';
-import AddExercise from './AddExercise';
+import { AddExercise } from './AddExercise';
 
 
 const gridRows = [0,1,2,3,4,5]; // six rows
@@ -55,6 +55,10 @@ class DaysGrid extends Component {
     return days
   }
 
+  addExercise = (year, month, day, rowIndex) => {
+    console.log('Yes!')
+  }
+
   displayExercise = (year, month, day, rowIndex) => {
     const monthDB = month + 1;  // Javascript Jan is zero, DB's Jan is 1
     const date = `${year}-${monthDB}-${day}`;
@@ -87,7 +91,14 @@ class DaysGrid extends Component {
           </div>
         );
       } else {
-        element = <AddExercise />;
+          const key = `${year}-${month}-${day}`;
+          element = <AddExercise 
+            key={key}
+            year={year}
+            month={month}
+            day={day}
+            addExercise={this.addExercise}
+        />;
       }
 
       rows[rowIndex] = {
@@ -120,6 +131,7 @@ class DaysGrid extends Component {
             month={this.props.month}
             row = {this.state.rows[i]}
             displayExercise = {this.displayExercise}
+            addExercise = {this.addExercise}
           />
       )
     });
