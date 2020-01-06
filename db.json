@@ -1,16 +1,26 @@
 {
   "exercises": [
-    { "id": 1, "type": "Hot Yoga" },
-    { "id": 2, "type": "Inferno Hot Pilates" },
-    { "id": 3, "type": "Futsal" },
-    { "id": 4, "type": "Pickup Soccer" },
-    { "id": 5, "type": "Walk" }
+    {
+      "id": 1,
+      "type": "Hot Yoga"
+    },
+    {
+      "id": 2,
+      "type": "Inferno Hot Pilates"
+    },
+    {
+      "id": 3,
+      "type": "Futsal"
+    },
+    {
+      "id": 4,
+      "type": "Pickup Soccer"
+    },
+    {
+      "id": 5,
+      "type": "Walk"
+    }
   ],
   "calendar_entries": [
-    { "id": 1, "date": "2019-10-31", "exerciseId": 2, "length": 1 },
-    { "id": 2, "date": "2019-10-30", "exerciseId": 3, "length": 2 },
-    { "id": 3, "date": "2019-10-29", "exerciseId": 2, "length": 3 },
-    { "id": 4, "date": "2019-11-2", "exerciseId": 2, "length": 3 },
-    { "id": 5, "date": "2019-11-2", "exerciseId": 5, "length": 2 }
   ]
 }

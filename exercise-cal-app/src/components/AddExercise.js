@@ -1,5 +1,5 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useEffect } from 'react';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -8,7 +8,11 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import SelectExercise from './SelectExercise'
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
 
 const styles = theme => ({
   root: {
@@ -22,6 +26,17 @@ const styles = theme => ({
     color: theme.palette.grey[500],
   },
 });
+
+const useStyles = makeStyles(theme => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 300,
+  },
+  hours: {
+    margin: theme.spacing(1),
+    width: 100,
+  },
+}));
 
 const DialogTitle = withStyles(styles)(props => {
   const { children, classes, onClose, ...other } = props;
@@ -52,13 +67,77 @@ const DialogActions = withStyles(theme => ({
 
 export function AddExercise(props) {
   const [open, setOpen] = React.useState(false);
+  const [selectedExercise, setSelectedExercise] = React.useState('');
+  const [hours, setHours] = React.useState(1);
+  const [exercises, setExercises] = React.useState([]);
+  const [errorExercise, setErrorExercise] = React.useState(false);
+  const [errorHours, setErrorHours] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClose = () => {
-    setOpen(false);
+  const handleClose = (exerciseId, hours) => {
+    if (exerciseId && hours) {
+      addExercise(exerciseId, hours);
+      setOpen(false);
+      setErrorExercise(false);
+      setErrorHours(false);
+    } else {
+      exerciseId ? setErrorExercise(false) : setErrorExercise(true);
+      hours ? setErrorHours(false) : setErrorHours(true);
+    }
+
   };
+
+  const addExercise = (exerciseId, hours) => {
+
+    //validate we have an exercise and hours
+
+    const monthDB = props.month + 1;  // Javascript Jan is zero, DB's Jan is 1
+    const date = `${props.year}-${monthDB}-${props.day}`;
+
+    const data = {
+      "date": date,
+      "exerciseId": exerciseId,
+      "length": hours,
+    };
+
+    const API = `http://localhost:3033/calendar_entries`;
+
+    fetch(API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then((response) =>  {
+      if (!response.ok) { console.error('Error:', response.statusText); }
+      response.json() })
+    .then((data) => {
+      props.displayExercise(props.year, props.month, props.day, props.rowIndex);
+    });
+  }
+
+  useEffect(() => {
+    const fetchData = () => {
+      const API = `http://localhost:3033/exercises`;
+      let menuItems = [];
+      fetch(API)
+      .then(results => {
+        return results.json();
+      })
+      .then(data => {
+        menuItems = data.map((exercise) => {
+          return (<MenuItem key={exercise.id} value={exercise.id}>{exercise.type}</MenuItem>);
+        })
+        setExercises(menuItems);
+      })
+    };
+    fetchData();
+  }, []);
+
+  const classes = useStyles();
 
   return (
     <div>
@@ -70,11 +149,41 @@ export function AddExercise(props) {
           Add exercise
         </DialogTitle>
         <DialogContent dividers>
-          <SelectExercise {...props}/>
+          <FormControl 
+            className={classes.formControl} 
+            required
+            error={errorExercise}
+          >
+            <InputLabel id="demo-simple-select-label">Exercises</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={selectedExercise}
+              onChange={(e) => {setSelectedExercise(e.target.value)}}
+            >
+            {exercises}
+            </Select>
+          </FormControl>
+          <br />
+          <TextField 
+            className={classes.hours}
+            id="standard-basic"
+            label="Hours"
+            onChange={(e) => setHours(e.target.value)}
+            defaultValue={hours}
+            required
+            error={errorHours}
+          >
+          {hours}
+          </TextField>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={() => { handleClose(); props.addExercise() }} color="primary">
-            Save exercise
+          <Button 
+            autoFocus 
+            onClick={() => { handleClose(selectedExercise, hours, props.displayExercise) }}
+            color="primary"
+          >
+          Save exercise
           </Button>
         </DialogActions>
       </Dialog>

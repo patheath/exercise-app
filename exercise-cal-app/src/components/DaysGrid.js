@@ -60,6 +60,7 @@ class DaysGrid extends Component {
   }
 
   displayExercise = (year, month, day, rowIndex) => {
+
     const monthDB = month + 1;  // Javascript Jan is zero, DB's Jan is 1
     const date = `${year}-${monthDB}-${day}`;
     const API = `http://localhost:3033/calendar_entries?date=${date}&_expand=exercise`;
@@ -97,7 +98,8 @@ class DaysGrid extends Component {
             year={year}
             month={month}
             day={day}
-            addExercise={this.addExercise}
+            displayExercise={this.displayExercise}
+            rowIndex={rowIndex}
         />;
       }
 
@@ -105,7 +107,6 @@ class DaysGrid extends Component {
         style: {display: 'table-row'},
         exercise: element,
       };
-
 
       this.setState((state) => { 
         return(
