@@ -19,6 +19,7 @@ class Calendar extends Component {
     };
   }
 
+
   calculateDays = (month, year) => {
     // Basically go to the next month and setDate(0) which moves you to the last day of previous month
     // and we can then know how many days in the month

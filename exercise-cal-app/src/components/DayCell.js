@@ -11,14 +11,13 @@ class DayCell extends Component {
     const className = todayMarker ? "today" : (this.props.day ? "day" : "nil")
 
     return(
-      <td className={className} onClick={(e) => {
-        this.props.displayExercise(
-          this.props.year,
-          this.props.month,
-          this.props.day,
-          this.props.rowIndex,
-        )}}
-      >{this.props.day}</td>)
+      <td 
+        className={className} 
+        onClick={(e) => { this.props.setOpen(this.props.year, this.props.month, this.props.day) }}
+      >
+        {this.props.day}
+      </td>
+    )
   }
 }
 export default DayCell;

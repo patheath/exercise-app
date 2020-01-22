@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import DayCell from './DayCell';
-import ExerciseRow from './ExerciseRow';
 
 class Row extends Component {
 
@@ -18,23 +17,13 @@ class Row extends Component {
           month={this.props.month}
           day={num}
           rowIndex={this.props.rowIndex}
-          displayExercise={this.props.displayExercise}
+          setOpen={this.props.setOpen}
         />
       )
     });
 
-    // Exercise row initial settings
-    const exerciseRowKey = prefix + this.props.rowIndex;
-
     return(
-      <>
         <tr>{row}</tr>
-        <ExerciseRow 
-          key={exerciseRowKey}
-          style={this.props.row.style}
-          exercise={this.props.row.exercise}
-        />
-      </>
     )
   }  
 }

@@ -13,6 +13,9 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 const styles = theme => ({
   root: {
@@ -66,58 +69,25 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 export function AddExercise(props) {
-  const [open, setOpen] = React.useState(false);
   const [selectedExercise, setSelectedExercise] = React.useState('');
   const [hours, setHours] = React.useState(1);
   const [exercises, setExercises] = React.useState([]);
   const [errorExercise, setErrorExercise] = React.useState(false);
   const [errorHours, setErrorHours] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = (exerciseId, hours) => {
+  const handleSubmit = (exerciseId, hours) => {
     if (exerciseId && hours) {
-      addExercise(exerciseId, hours);
-      setOpen(false);
+      props.submitExercise(exerciseId, hours);
       setErrorExercise(false);
       setErrorHours(false);
+      setSelectedExercise('');
+      setHours(1);
     } else {
       exerciseId ? setErrorExercise(false) : setErrorExercise(true);
       hours ? setErrorHours(false) : setErrorHours(true);
     }
 
   };
-
-  const addExercise = (exerciseId, hours) => {
-
-    //validate we have an exercise and hours
-
-    const monthDB = props.month + 1;  // Javascript Jan is zero, DB's Jan is 1
-    const date = `${props.year}-${monthDB}-${props.day}`;
-
-    const data = {
-      "date": date,
-      "exerciseId": exerciseId,
-      "length": hours,
-    };
-
-    const API = `http://localhost:3033/calendar_entries`;
-
-    fetch(API, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    .then((response) =>  {
-      if (!response.ok) { console.error('Error:', response.statusText); }
-      response.json() })
-    .then((data) => {
-      props.displayExercise(props.year, props.month, props.day, props.rowIndex);
-    });
-  }
 
   useEffect(() => {
     const fetchData = () => {
@@ -139,54 +109,73 @@ export function AddExercise(props) {
 
   const classes = useStyles();
 
-  return (
-    <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add Exercise
-      </Button>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Add exercise
-        </DialogTitle>
-        <DialogContent dividers>
-          <FormControl 
-            className={classes.formControl} 
-            required
-            error={errorExercise}
-          >
-            <InputLabel id="demo-simple-select-label">Exercises</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={selectedExercise}
-              onChange={(e) => {setSelectedExercise(e.target.value)}}
+  if (!props.open) {
+    return null;
+  } else {
+
+    const completedExercises = props.completedExercises.map((exercise, index) => {
+      const text = `${exercise.type} - ${exercise.length} hours`;
+      return(
+        <ListItem
+          key={index}
+        >
+          <ListItemText
+            primary={text}
+          />
+        </ListItem>
+      )
+    });
+
+    return (
+      <div>
+        <Dialog onClose={props.setClosed} aria-labelledby="customized-dialog-title" open={props.open}>
+          <DialogTitle id="simple-dialog-title">Completed exercises</DialogTitle>
+          <List>
+            {completedExercises}
+          </List>
+          <DialogTitle id="customized-dialog-title" onClose={props.setClosed}>
+            Add exercise
+          </DialogTitle>
+          <DialogContent dividers>
+            <FormControl 
+              className={classes.formControl} 
+              required
+              error={errorExercise}
             >
-            {exercises}
-            </Select>
-          </FormControl>
-          <br />
-          <TextField 
-            className={classes.hours}
-            id="standard-basic"
-            label="Hours"
-            onChange={(e) => setHours(e.target.value)}
-            defaultValue={hours}
-            required
-            error={errorHours}
-          >
-          {hours}
-          </TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            autoFocus 
-            onClick={() => { handleClose(selectedExercise, hours, props.displayExercise) }}
-            color="primary"
-          >
-          Save exercise
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
+              <InputLabel id="demo-simple-select-label">Exercises</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedExercise}
+                onChange={(e) => {setSelectedExercise(e.target.value)}}
+              >
+              {exercises}
+              </Select>
+            </FormControl>
+            <br />
+            <TextField 
+              className={classes.hours}
+              id="standard-basic"
+              label="Hours"
+              onChange={(e) => setHours(e.target.value)}
+              value={hours}
+              required
+              error={errorHours}
+            >
+            {hours}
+            </TextField>
+          </DialogContent>
+          <DialogActions>
+            <Button 
+              autoFocus 
+              onClick={() => { handleSubmit(selectedExercise, hours) }}
+              color="primary"
+            >
+            Save exercise
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
 }

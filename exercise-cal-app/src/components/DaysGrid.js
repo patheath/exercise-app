@@ -3,28 +3,89 @@ import DaysHeader from './DaysHeader';
 import Row from './Row';
 import { AddExercise } from './AddExercise';
 
-
 const gridRows = [0,1,2,3,4,5]; // six rows
 
 class DaysGrid extends Component {
   constructor(props) {
     super(props);
-    
-    this.state = {
-      rows: this.emptyRows(),
+
+    this.state = { 
+      open: false,
+      selectedDate: '', 
+      completedExercises: [],
     };
+
+    this.setOpen = this.setOpen.bind(this);
+    this.submitExercise = this.submitExercise.bind(this);
+    this.setClosed = this.setClosed.bind(this);
   }
 
-  emptyRows = () => {
-    return (gridRows.map((i) => {
-      return {
-        style: {display: 'none'},
-        exercise: '',
-      };
-    }))
-  };
+  updateCompletedExercises (date) {
+    const API = `http://localhost:3033/calendar_entries?date=${date}&_expand=exercise`;
 
-  buildDays = (startingDay, daysInMonth) => {
+    fetch(API)
+    .then(results => {
+      if (!results.ok) { console.error('Error:', results.statusText); }
+      return results.json();
+    }).then(data => {
+      var exercises = data.map((exercise, index) => {
+        return( { num: index, type: exercise.exercise.type, length: exercise.length })
+      });
+      this.setState((state) => {
+        return ({
+          completedExercises: exercises
+        })
+      });
+    })
+  }
+
+  setOpen (year, month, day) {
+    // Update selected date and update exercises
+    const monthDB = month + 1;  // Javascript Jan is zero, DB's Jan is 1
+    const date = `${year}-${monthDB}-${day}`;
+
+    this.setState((state) => ({ open: true, selectedDate: date, }));
+
+    this.updateCompletedExercises(date);
+  }
+
+  setClosed() {
+    this.setState((state) => ({ 
+        open: false,
+        selectedDate: '', 
+        completedExercises: [],
+    }));
+  }
+
+  submitExercise (exerciseId, hours) {
+    //validate we have an exercise and hours
+    const selectedDate = this.state.selectedDate;
+
+    const data = {
+      "date": selectedDate,
+      "exerciseId": exerciseId,
+      "length": hours,
+    };
+    console.log(data);
+
+    const API = `http://localhost:3033/calendar_entries`;
+
+    fetch(API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then((response) =>  {
+      if (!response.ok) { console.error('Error:', response.statusText); }
+      response.json() })
+    .then((data) => {
+      this.updateCompletedExercises(selectedDate);
+    });
+  }
+
+  buildDays (startingDay, daysInMonth) {
     let day = 1;
     let days = [];
 
@@ -55,67 +116,6 @@ class DaysGrid extends Component {
     return days
   }
 
-  addExercise = (year, month, day, rowIndex) => {
-    console.log('Yes!')
-  }
-
-  displayExercise = (year, month, day, rowIndex) => {
-
-    const monthDB = month + 1;  // Javascript Jan is zero, DB's Jan is 1
-    const date = `${year}-${monthDB}-${day}`;
-    const API = `http://localhost:3033/calendar_entries?date=${date}&_expand=exercise`;
-
-    let rows = this.emptyRows();
-
-    fetch(API)
-    .then(results => {
-      return results.json();
-    }).then(data => {
-      var exercises = data.map((exercise, index) => {
-        let type = exercise.exercise.type;
-        let length = exercise.length;
-        let text = `${type} - ${length} hours`;
-        return(<li key={index}>{text}</li>);
-      });
-
-      let element;
-      if (exercises.length > 0) {
-
-        element = (
-          <div>
-          <ul style={{listStyleType: 'none'}}>
-            { exercises.map(exercise => {
-              return exercise
-              })
-            }
-          </ul>
-          </div>
-        );
-      } else {
-          const key = `${year}-${month}-${day}`;
-          element = <AddExercise 
-            key={key}
-            year={year}
-            month={month}
-            day={day}
-            displayExercise={this.displayExercise}
-            rowIndex={rowIndex}
-        />;
-      }
-
-      rows[rowIndex] = {
-        style: {display: 'table-row'},
-        exercise: element,
-      };
-
-      this.setState((state) => { 
-        return(
-          { rows: rows }
-        );
-      });
-    })
-  }
-
   render(props) {
     
     const days = this.buildDays(this.props.startingDay, this.props.daysInMonth);
@@ -130,9 +130,7 @@ class DaysGrid extends Component {
             days={daysSlice}
             year={this.props.year}
             month={this.props.month}
-            row = {this.state.rows[i]}
-            displayExercise = {this.displayExercise}
-            addExercise = {this.addExercise}
+            setOpen = {this.setOpen}
           />
       )
     });
@@ -140,7 +138,13 @@ class DaysGrid extends Component {
     return(
       <div>
         <DaysHeader />
-        <div id="cal-frame"> 
+        <div id="cal-frame">
+          <AddExercise 
+            open={this.state.open}
+            setClosed = {this.setClosed}
+            submitExercise = {this.submitExercise}
+            completedExercises = {this.state.completedExercises}
+          />
           <table className="curr"> 
               <tbody>
                 {rows}
