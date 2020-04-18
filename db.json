@@ -63,6 +63,18 @@
       "exerciseId": 3,
       "length": "1.25",
       "id": 7
+    },
+    {
+      "date": "2020-1-22",
+      "exerciseId": 3,
+      "length": 1,
+      "id": 8
+    },
+    {
+      "date": "2020-1-22",
+      "exerciseId": 1,
+      "length": "2",
+      "id": 9
     }
   ]
 }

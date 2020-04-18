@@ -39,6 +39,9 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     width: 100,
   },
+  listItem: {
+    selected: true
+  }
 }));
 
 const DialogTitle = withStyles(styles)(props => {
@@ -117,6 +120,7 @@ export function AddExercise(props) {
       const text = `${exercise.type} - ${exercise.length} hours`;
       return(
         <ListItem
+          className={className.listItem}
           key={index}
         >
           <ListItemText
@@ -167,7 +171,7 @@ export function AddExercise(props) {
           </DialogContent>
           <DialogActions>
             <Button 
-              autoFocus 
+              variant="contained" 
               onClick={() => { handleSubmit(selectedExercise, hours) }}
               color="primary"
             >
