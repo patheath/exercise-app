@@ -20,4 +20,6 @@ workflows:
     build-and-test:
       jobs:
         - prepare
-        - build-and-test
+        - build-and-test:
+          requires:
+            - prepare  
