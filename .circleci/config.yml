@@ -2,12 +2,13 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
+  prepare:
+    working_directory: exercise-cal-app
   build-and-test:
     executor:
       name: node/default
     steps:
       - checkout
-      - run: cd exercise-cal-app
       - node/with-cache:
           steps:
             - run: npm install
@@ -15,4 +16,5 @@ jobs:
 workflows:
     build-and-test:
       jobs:
+        - prepare
         - build-and-test
