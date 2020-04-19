@@ -9,10 +9,10 @@ jobs:
       - checkout
       - run: cd exercise-cal-app
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ checksum "exercise-cal-app/package-lock.json" }}
       - run: npm install
       - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ checksum "exercise-cal-app/package-lock.json" }}
           paths:
             - ./node_modules
       - run: npm test
