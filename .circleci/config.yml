@@ -7,7 +7,7 @@ jobs:
       name: node/default
     steps:
       - checkout
-      - run: cd ~/exercise-cal-app
+      - run: cd exercise-cal-app
       - node/with-cache:
           steps:
             - run: npm install
