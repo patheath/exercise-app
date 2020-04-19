@@ -10,8 +10,8 @@ jobs:
       - node/with-cache:
           steps:
             - run:
-		-name: move to Exercise App
-		-command: cd /exercise-app
+              -name: move to Exercise App
+		          -command: cd /exercise-app
             - run: npm install
             - run: npm test
 workflows:
