@@ -5,8 +5,8 @@ jobs:
   prepare:
     executor:
       name: get code
-      steps:
-        - checkout
+    steps:
+      - checkout
   build-and-test:
     executor:
       name: node/default
