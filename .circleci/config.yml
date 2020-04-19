@@ -11,7 +11,7 @@ jobs:
           steps:
             - run:
               -name: move to Exercise App
-		          -command: cd /exercise-app
+              -command: cd /exercise-app
             - run: npm install
             - run: npm test
 workflows:
