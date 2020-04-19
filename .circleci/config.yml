@@ -7,9 +7,9 @@ jobs:
       name: node/default
     steps:
       - checkout
+      - run: cd exercise-cal-app
       - node/with-cache:
           steps:
-            - run: cd exercise-cal-app
             - run: npm install
             - run: npm test
 workflows:
