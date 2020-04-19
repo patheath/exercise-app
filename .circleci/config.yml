@@ -3,10 +3,12 @@ orbs:
   node: circleci/node@1.1.6
 jobs:
   prepare:
-    working_directory: exercise-cal-app
+    executor:
+      working_directory: exercise-cal-app
   build-and-test:
     executor:
       name: node/default
+      working_directory: exercise-cal-app
     steps:
       - checkout
       - node/with-cache:
