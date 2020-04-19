@@ -22,5 +22,5 @@ workflows:
       jobs:
         - prepare
         - build-and-test:
-          requires:
-            - prepare  
+            requires:
+              - prepare  
